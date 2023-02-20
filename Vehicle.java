@@ -1,7 +1,12 @@
+import java.util.Random;
+
 public abstract class Vehicle {
     private int DistanceTraveled;
-
-
+    private int Speed;
+    private int Adhesion;
+    private int Out;
+    private String PilotName;
+    private boolean End;
 
     public int getDistanceTraveled() {
         return DistanceTraveled;
@@ -11,20 +16,13 @@ public abstract class Vehicle {
         DistanceTraveled = distanceTraveled;
     }
 
-    private int Speed;
-
     public  int getSpeed() {
         return Speed;
     }
 
-    private int Adhesion;
-    
-
     public int getAdhesion() {
         return Adhesion;
     }
-
-    private int Out;
 
     public int getOut() {
         return Out;
@@ -34,13 +32,9 @@ public abstract class Vehicle {
         Out = out;
     }
 
-    private String PilotName;
-
     public String getPilotName() {
         return PilotName;
     }
-
-    private boolean End;
 
     public boolean isEnd() {
         return End;
@@ -54,29 +48,59 @@ public abstract class Vehicle {
         this.PilotName = PilotName;
         this.Speed = Speed;
         this.Adhesion = Adhesion;
-        Adhesion = 1 + (int)(Math.random() * ((10 - 1) + 1));
-        Speed = 1 + (int)(Math.random() * ((10 - 1) + 1));
         Out = 0;
         End = false;
     }
-
-    public static int Forward(int Speed, int Adhesion, boolean Out) {
-        if (Out) {
-            return 0;
+    public void Forward() {
+        if (this.Out == 0) {
+            Random rand = new Random();
+            int n = rand.nextInt(10) + 1;
+            int distance = this.Speed * (11 - this.Adhesion);
+            if (n > this.Adhesion) {
+                this.Accident();
+            }
+            this.DistanceTraveled += distance;
         }
-        int forward = Speed * (11 - Adhesion);
-        return forward;
     }
 
-    public static void Accident(int Adhesion) {
-        int n = 1 + (int)(Math.random() * ((10 - 1) + 1));
-        
+    public void Accident() {
+        int min = 1;
+        int max = 10;
+        int n = (int)Math.floor(Math.random() * (max - min + 1) + min);
 
-        if (n > Adhesion) {
-            int Out = n - Adhesion;
-            System.out.println("Le pilote est en accident pendant " + Out + " tour(s) et ne peut plus bouger.");
-        }
+        int out = n - this.Adhesion;
+        this.Out = out > 0 ? out : 1;
     }
     
-    }
+    public String toString() {
+        String speedStr;
+        if (Speed <= 2) {
+            speedStr = "slow";
+        } else if (Speed <= 4) {
+            speedStr = "rather slow";
+        } else if (Speed <= 6) {
+            speedStr = "rather fast";
+        } else if (Speed <= 8) {
+            speedStr = "fast";
+        } else {
+            speedStr = "very fast";
+        }
 
+        String adhesionStr;
+        if (Adhesion <= 2) {
+            adhesionStr = "barely sticks to the ground";
+        } else if (Adhesion <= 4) {
+            adhesionStr = "sticks to the ground";
+        } else if (Adhesion <= 6) {
+            adhesionStr = "grips the ground quite well";
+        } else if (Adhesion <= 8) {
+            adhesionStr = "adheres well to the ground";
+        } else {
+            adhesionStr = "adheres perfectly to the ground";
+        }
+
+        return "This " + getClass().getSimpleName().toUpperCase() + " is " + speedStr +
+                ", it has a " + Speed + " speed value, and it " + adhesionStr +
+                " with a " + Adhesion + " value of adhesion";
+    }
+}
